@@ -2,40 +2,61 @@
 pragma solidity ^0.8.17;
 
 contract Voting {
-    event addCandidateOk(int256 candidateNumber);
+    event addCandidateOk(uint256 candidateNumber);
 
     struct Candidate {
         string name;
         string party;
-        int256 number;
+        uint256 number;
+        bool exists;
     }
-    struct validVote {
-        string candidate;
-        int256 candidateNumber;
+    struct ValidVote {
+        string id;
+        uint256 candidateNumber;
     }
 
-    int256 numberOfCandidates;
-    int256 numberOfVotes;
+    uint256 numberOfCandidates;
+    uint256 numberOfVotes;
 
-    mapping(int256 => Candidate) candidates;
-    mapping(int256 => validVote) votes;
+    uint256[] _keys;
+
+    mapping(uint256 => Candidate) candidates;
+    mapping(uint256 => ValidVote) votes;
 
     function addCandidate(
         string memory name,
         string memory party,
-        int256 candidateNumber
-    ) internal {
-        candidates[candidateNumber] = Candidate(name, party, candidateNumber);
-        emit addCandidateOk(candidateNumber);
+        uint256 candidateNumber
+    ) public returns (uint256) {
+        if (candidates[candidateNumber].exists != true) {
+            candidates[candidateNumber] = Candidate(
+                name,
+                party,
+                candidateNumber,
+                true
+            );
+            ++numberOfCandidates;
+            _keys.push(candidateNumber);
+        }
+
+        return candidateNumber;
     }
 
-    function getResultsForCandidate(int256 candidateNumber)
+    function vote(string memory id, uint256 candidateID) public {
+        // checks if the struct exists for that candidate
+        if (candidates[candidateID].exists == true) {
+            uint256 voterID = numberOfVotes++;
+            votes[voterID] = ValidVote(id, candidateID);
+        }
+    }
+
+    function getResultsForCandidate(uint256 candidateNumber)
         public
         view
-        returns (int256)
+        returns (uint256)
     {
-        int256 numberCandidateVotes = 0;
-        for (int256 j = 0; j < numberOfVotes; ++j) {
+        uint256 numberCandidateVotes = 0;
+        for (uint256 j = 0; j < numberOfVotes; ++j) {
             if (votes[j].candidateNumber == candidateNumber) {
                 ++numberCandidateVotes;
             }
@@ -43,11 +64,15 @@ contract Voting {
         return numberCandidateVotes;
     }
 
-    function getNumberOfCandidates() public view returns (int256) {
+    function getNumberOfCandidates() public view returns (uint256) {
         return numberOfCandidates;
     }
 
-    function getNUmberOfVotes() public view returns (int256) {
+    function getNumberOfVotes() public view returns (uint256) {
         return numberOfVotes;
+    }
+
+    function getCandidates() public view returns (uint256[] memory) {
+        return _keys;
     }
 }
