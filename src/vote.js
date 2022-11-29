@@ -1,25 +1,20 @@
-const Web3 = require("web3")
-const contract = require("truffle-contract")
-const votingArtifacts = require("../build/contracts/Voting.json")
+import crypto from 'crypto-js'
+import moment from "moment"
+import init from "./_loadContract.js"
 
+const VotingContract = init()
 
-let VotingContract = contract(votingArtifacts)
-let candidates = []
-console.log("Connecting to local server")
-let web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:9545"))
-VotingContract.setProvider(web3.currentProvider)
-VotingContract.defaults({ from: web3.eth.accounts[0], gas: 6721975 })
+const args = process.argv.slice(2)
+const candidateNumber = args[1]
+const id = crypto.MD5(args[0]).toString()
+console.log("0x".concat(id))
+const time = moment().unix()
 
-let id = "henrique"
-let candidateNumber = 13
-
-VotingContract.deployed().then(function (instance) {
-
-    instance.vote(id, candidateNumber).then(
-        function (result) {
-            console.log("Votado!")
-        }
-    )
-}).catch(function (err) {
-    console.log("ERROR! " + err.message)
-})
+VotingContract.deployed()
+  .then(async (instance) => {
+    console.log("0x".concat(id), candidateNumber, time)
+    await instance.vote(id, candidateNumber, time)
+    console.log("Votado!")
+  }).catch((err) => {
+    console.log("ERROR: " + err.message)
+  })
