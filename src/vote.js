@@ -6,13 +6,12 @@ const VotingContract = init()
 
 const args = process.argv.slice(2)
 const candidateNumber = args[1]
-const id = crypto.MD5(args[0]).toString()
-console.log("0x".concat(id))
+const id = BigInt("0x".concat(crypto.SHA256(args[0]).toString()))
 const time = moment().unix()
 
 VotingContract.deployed()
   .then(async (instance) => {
-    console.log("0x".concat(id), candidateNumber, time)
+    console.log(id, candidateNumber, time)
     await instance.vote(id, candidateNumber, time)
     console.log("Votado!")
   }).catch((err) => {
