@@ -11,7 +11,7 @@ const time = moment().unix()
 
 VotingContract.deployed()
   .then(async (instance) => {
-    console.log(id, candidateNumber, time)
+    // console.log(id, candidateNumber, time)
     await instance.vote(id, candidateNumber, time)
     console.log("Votado!")
   }).catch((err) => {
