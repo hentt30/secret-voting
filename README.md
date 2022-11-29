@@ -4,17 +4,17 @@ This boilerplate was made for this [blog post](https://medium.freecodecamp.org/d
 ### Dependencies:
 - [Nodejs 5.0+](https://nodejs.org/en/)
 - [Truffle](https://github.com/trufflesuite/truffle)
-- [Ganache](http://truffleframework.com/ganache/)
 
 ## Setup
 ```
-npm install
 cd src
+npm install
 source setup.sh
 ```
 
 ### Truffle terminal
 ```
-truffle develop -> compile -> migrate
+truffle develop
+migrate
 ```
 

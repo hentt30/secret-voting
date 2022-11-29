@@ -10,8 +10,10 @@ const number = parseInt(args[2], 10)
 const time = moment().unix()
 
 VotingContract.deployed()
-  .then(async (instace) => {
-    await instace.addCandidate(name, party, number, time)
+  .then(async (instance) => {
+    await instance.addCandidate(name, party, number, time)
+    const num = await instance.getNumberOfCandidates()
+    console.log('Total of candidates: ', num.toString())
     // const candidates = await instace.getCandidates()
     // console.log('Current candidates: ', candidates)
   })
